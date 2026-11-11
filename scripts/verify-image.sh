@@ -25,6 +25,9 @@ podman run --rm --entrypoint /usr/bin/bash "localhost/$variant:45" -euc '
         expected=$(jq -er --arg package "$package" '\''"\(.[$package].version)-\(.[$package].release)"'\'' /usr/share/lagexpress/desktop-apps.json)
         test "$(rpm -q --qf "%{VERSION}-%{RELEASE}" "$package")" = "$expected"
     done
+    # bootc initializes the root home at boot; a fresh test container has no
+    # /var/roothome yet. Give CLI probes their normal writable home directory.
+    install -d -m 700 "$(readlink -m /root)"
     hex --version
     codex --version
     opencode --version
