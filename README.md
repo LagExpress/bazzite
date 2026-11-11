@@ -78,6 +78,14 @@ Every published image gets `45`, `stable-45`, `latest`, and
 Signing-key validation runs before the expensive build. Published digests are
 signed and verified using the repository public key.
 
+GHCR package permissions are separate from repository permissions. If a package
+name already exists from an older project, its Package settings → Manage Actions
+access must grant `LagExpress/bazzite` Write access. Otherwise publishing fails
+with `permission_denied: write_package`, even though the workflow requests
+`packages: write`. An obsolete package can instead be deleted by its owner and
+recreated by this workflow, which connects the new package to this repository.
+See [GitHub's package access documentation](https://docs.github.com/en/packages/learn-github-packages/configuring-a-packages-access-control-and-visibility#ensuring-workflow-access-to-your-package).
+
 After reviewing and committing the setup changes:
 
 ```bash
