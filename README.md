@@ -99,6 +99,8 @@ verification when using tools that honor containers/image policy.
 ## Brave Origin packaging
 
 `build_files/build.sh` installs the RPM through DNF5 with signature checks enabled.
+It temporarily replaces a symlinked `/opt` with a real directory during the RPM
+transaction, then restores the original symlink without changing its existing target.
 The payload is moved from `/opt/brave.com/brave-origin` to
 `/usr/lib/opt/brave.com/brave-origin`; a tmpfiles rule recreates the expected link
 at boot. This keeps Brave available after bootc deployments, where `/var` content

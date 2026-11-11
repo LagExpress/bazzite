@@ -43,7 +43,7 @@ jobs:
       packages: write
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: 11
       matrix: ${{ fromJson(needs.matrix.outputs.images) }}
     env:
       IMAGE_NAME: ${{ matrix.name }}

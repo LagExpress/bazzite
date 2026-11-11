@@ -5,11 +5,21 @@ set -euo pipefail
 test "$(rpm -E '%fedora')" = 45
 cp -avf /ctx/system_files/. /
 
+# Recent RPM versions refuse to unpack through /opt when it is a symlink.
+# Temporarily use a real directory; preserve the existing mutable target and
+# restore the original link after relocating only Brave's new payload.
+opt_link=''
+if [[ -L /opt ]]; then
+	opt_link="$(readlink /opt)"
+	rm /opt
+	mkdir /opt
+fi
+
 # Official Brave Origin release RPM repository; retain RPM signature checks.
 curl --fail --silent --show-error --location --retry 3 \
 	https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo \
 	--output /etc/yum.repos.d/brave-browser.repo
-dnf5 install -y brave-origin
+dnf5 --setopt=install_weak_deps=False install -y brave-origin
 rpm -q brave-origin
 
 # /opt normally points into mutable /var/opt. Store the RPM payload in /usr
@@ -18,6 +28,12 @@ install -d /usr/lib/opt/brave.com /usr/lib/tmpfiles.d
 test -x /opt/brave.com/brave-origin/brave
 test ! -e /usr/lib/opt/brave.com/brave-origin
 mv /opt/brave.com/brave-origin /usr/lib/opt/brave.com/brave-origin
+if [[ -n "$opt_link" ]]; then
+	rmdir /opt/brave.com /opt
+	ln -s "$opt_link" /opt
+	mkdir -p "$(readlink -m /opt)"
+	install -d /opt/brave.com
+fi
 ln -s /usr/lib/opt/brave.com/brave-origin /opt/brave.com/brave-origin
 cat >/usr/lib/tmpfiles.d/brave-origin.conf <<'EOF'
 d /opt/brave.com 0755 root root -
