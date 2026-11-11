@@ -1,27 +1,42 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-set -ouex pipefail
+# Never silently change Fedora releases with an upstream tag.
+test "$(rpm -E '%fedora')" = 45
+cp -avf /ctx/system_files/. /
 
-# Copy the contents of system_files/ of the git repo to /
-cp -avf "/ctx/system_files"/. /
+# Official Brave Origin release RPM repository; retain RPM signature checks.
+curl --fail --silent --show-error --location --retry 3 \
+	https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo \
+	--output /etc/yum.repos.d/brave-browser.repo
+dnf5 install -y brave-origin
+rpm -q brave-origin
 
-### Install packages
+# /opt normally points into mutable /var/opt. Store the RPM payload in /usr
+# and recreate its expected /opt path when booting an installed system.
+install -d /usr/lib/opt/brave.com /usr/lib/tmpfiles.d
+test -x /opt/brave.com/brave-origin/brave
+test ! -e /usr/lib/opt/brave.com/brave-origin
+mv /opt/brave.com/brave-origin /usr/lib/opt/brave.com/brave-origin
+ln -s /usr/lib/opt/brave.com/brave-origin /opt/brave.com/brave-origin
+cat >/usr/lib/tmpfiles.d/brave-origin.conf <<'EOF'
+d /opt/brave.com 0755 root root -
+L /opt/brave.com/brave-origin - - - - /usr/lib/opt/brave.com/brave-origin
+EOF
+test -x /usr/bin/brave-origin
 
-# Packages can be installed from any enabled yum repo on the image.
-# RPMfusion repos are available by default in ublue main images
-# List of rpmfusion packages can be found here:
-# https://mirrors.rpmfusion.org/mirrorlist?path=free/fedora/updates/43/x86_64/repoview/index.html&protocol=https&redirect=1
-
-# this installs a package from fedora repos
-dnf5 install -y tmux
-
-# Use a COPR Example:
-#
-# dnf5 -y copr enable ublue-os/staging
-# dnf5 -y install package
-# Disable COPRs so they don't end up enabled on the final image:
-# dnf5 -y copr disable ublue-os/staging
-
-#### Example for enabling a System Unit File
-
-systemctl enable podman.socket
+# Add policies for all fork variants, preserving the upstream policies.
+install -Dm644 /ctx/cosign.pub /etc/pki/containers/lagexpress-bazzite.pub
+install -d /etc/containers/registries.d
+printf 'docker:\n  %s:\n    use-sigstore-attachments: true\n' "$IMAGE_REGISTRY" \
+	>/etc/containers/registries.d/lagexpress-bazzite.yaml
+jq --arg registry "$IMAGE_REGISTRY" --slurpfile matrix /ctx/images.json '
+  reduce $matrix[0].images[].name as $name (. ;
+    .transports.docker[($registry + "/" + $name)] = [{
+      type: "sigstoreSigned",
+      keyPath: "/etc/pki/containers/lagexpress-bazzite.pub",
+      signedIdentity: {type: "matchRepository"}
+    }])
+' /etc/containers/policy.json >/tmp/policy.json
+install -m644 /tmp/policy.json /etc/containers/policy.json
+dnf5 clean all

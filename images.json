@@ -1,0 +1,16 @@
+{
+  "fedora": 45,
+  "images": [
+    {"name": "bazzite-kde", "base": "ghcr.io/ublue-os/bazzite:stable-45"},
+    {"name": "bazzite-gnome", "base": "ghcr.io/ublue-os/bazzite-gnome:stable-45"},
+    {"name": "bazzite-kde-nvidia", "base": "ghcr.io/ublue-os/bazzite-nvidia:stable-45"},
+    {"name": "bazzite-gnome-nvidia", "base": "ghcr.io/ublue-os/bazzite-gnome-nvidia:stable-45"},
+    {"name": "bazzite-kde-nvidia-open", "base": "ghcr.io/ublue-os/bazzite-nvidia-open:stable-45"},
+    {"name": "bazzite-gnome-nvidia-open", "base": "ghcr.io/ublue-os/bazzite-gnome-nvidia-open:stable-45"},
+    {"name": "bazzite-deck-kde", "base": "ghcr.io/ublue-os/bazzite-deck:stable-45"},
+    {"name": "bazzite-deck-gnome", "base": "ghcr.io/ublue-os/bazzite-deck-gnome:stable-45"},
+    {"name": "bazzite-deck-kde-nvidia-open", "base": "ghcr.io/ublue-os/bazzite-deck-nvidia:stable-45"},
+    {"name": "bazzite-deck-gnome-nvidia-open", "base": "ghcr.io/ublue-os/bazzite-deck-nvidia-gnome:stable-45"},
+    {"name": "bazzite-dx-nvidia-open", "base": "ghcr.io/ublue-os/bazzite-dx-nvidia:stable-45"}
+  ]
+}

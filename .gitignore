@@ -1,6 +1,19 @@
 cosign.key
+*.key
+secrets/
 _build_*
 output
 _build-*/**
 *_chunkah_*
 *_rpm-ostree_*
+
+# Devenv
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml

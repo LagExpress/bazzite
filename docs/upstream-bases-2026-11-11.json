@@ -1,0 +1,101 @@
+{
+  "bazzite": [
+    {
+      "tag": "stable-45",
+      "digest": "sha256:2717668c53af1077c012f7ad3d6d4ef30bb7c6680af5d9592abdae4daa0e88ba",
+      "version": "45.20261111",
+      "base": null,
+      "kernel": "7.3.3-ogc1.1.fc45.x86_64"
+    }
+  ],
+  "bazzite-gnome": [
+    {
+      "tag": "stable-45",
+      "digest": "sha256:d910619ace8028499df296fc11e5ccad2deb80c8fc8e509bb754c1757cc45488",
+      "version": "45.20261111",
+      "base": null,
+      "kernel": "7.3.3-ogc1.1.fc45.x86_64"
+    }
+  ],
+  "bazzite-nvidia": [
+    {
+      "tag": "stable-45",
+      "digest": "sha256:126fa407e098fe60499521dd02fd67f182a6c72d71abbe0cc44ddf8838f85eeb",
+      "version": "45.20261111",
+      "base": null,
+      "kernel": "6.18.60-ogc1.1.fc45.x86_64"
+    }
+  ],
+  "bazzite-gnome-nvidia": [
+    {
+      "tag": "stable-45",
+      "digest": "sha256:e3a428b6b025373250b8e1589a6bbee689053742c9c31dab3c4f54a1132dfc8d",
+      "version": "45.20261111",
+      "base": null,
+      "kernel": "6.18.60-ogc1.1.fc45.x86_64"
+    }
+  ],
+  "bazzite-nvidia-open": [
+    {
+      "tag": "stable-45",
+      "digest": "sha256:e55093691d95cd42f6e8115dc681ce95b07cbc935fb2393f58e4446cf1878585",
+      "version": "45.20261111",
+      "base": null,
+      "kernel": "7.3.3-ogc1.1.fc45.x86_64"
+    }
+  ],
+  "bazzite-gnome-nvidia-open": [
+    {
+      "tag": "stable-45",
+      "digest": "sha256:a4aa291a847e318fba7a70a920e601394ba429529decd3e27fae04a3c74bf467",
+      "version": "45.20261111",
+      "base": null,
+      "kernel": "7.3.3-ogc1.1.fc45.x86_64"
+    }
+  ],
+  "bazzite-deck": [
+    {
+      "tag": "stable-45",
+      "digest": "sha256:7403b03b8a80ce425c69e23c8473984237fe7e86a6c10e1b889b789b3a107ca2",
+      "version": "45.20261111",
+      "base": null,
+      "kernel": "7.3.3-ogc1.1.fc45.x86_64"
+    }
+  ],
+  "bazzite-deck-gnome": [
+    {
+      "tag": "stable-45",
+      "digest": "sha256:8dde1bd03411b3baa10c48a43c39ca033c48ccd6ff052007ea7116ebd47b8392",
+      "version": "45.20261111",
+      "base": null,
+      "kernel": "7.3.3-ogc1.1.fc45.x86_64"
+    }
+  ],
+  "bazzite-deck-nvidia": [
+    {
+      "tag": "stable-45",
+      "digest": "sha256:4abfd10d21736b0a26d2b656903e94b7196be669f947b8ae65a76c12c3f0337c",
+      "version": "45.20261111",
+      "base": null,
+      "kernel": "7.3.3-ogc1.1.fc45.x86_64"
+    }
+  ],
+  "bazzite-deck-nvidia-gnome": [
+    {
+      "tag": "stable-45",
+      "digest": "sha256:ef33594769a6bdcc0f707b5665f5083d9c8b6a48e8fd72a67ce5d1819b538ec0",
+      "version": "45.20261111",
+      "base": null,
+      "kernel": "7.3.3-ogc1.1.fc45.x86_64"
+    }
+  ],
+  "bazzite-dx-nvidia": [
+    {
+      "tag": "stable-45",
+      "digest": "sha256:d184e652a0bf74591a75ff8226c005324c9432696b291acd2486d4b193594eb9",
+      "version": "45.20261111",
+      "base": null,
+      "kernel": "7.3.3-ogc1.1.fc45.x86_64"
+    }
+  ]
+}
