@@ -30,6 +30,7 @@ jobs:
           for script in build_files/*.sh scripts/*.sh; do bash -n "$script"; done
           shellcheck build_files/build.sh scripts/*.sh
           jq -e '.fedora == 45 and (.images | length == 11) and ([.images[].name] | length == (unique | length)) and all(.images[]; (.name | test("^[a-z0-9-]+$")) and (.base | test("^ghcr.io/ublue-os/[a-z0-9-]+:stable-45$")))' images.json
+          jq -e 'keys == ["hex", "opencode"] and all(.[]; (.version | test("^[0-9]+[.][0-9]+[.][0-9]+$")) and (.release | test("^[0-9]+$")) and (.sha256 | test("^[0-9a-f]{64}$")) and (.url | startswith("https://")))' build_files/desktop-apps.json
       - name: Export image matrix
         id: matrix
         run: echo "images=$(jq -c '{include:.images}' images.json)" >> "$GITHUB_OUTPUT"
@@ -74,7 +75,7 @@ jobs:
         uses: ublue-os/remove-unwanted-software@695eb75bc387dbcd9685a8e72d23439d8686cba6
       - name: Build image
         run: bash scripts/build-image.sh "$IMAGE_NAME"
-      - name: Verify Fedora 45 and Brave Origin installation
+      - name: Verify Fedora 45 and desktop application installation
         run: bash scripts/verify-image.sh "$IMAGE_NAME"
       - name: Login to GHCR
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'

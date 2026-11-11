@@ -1,0 +1,14 @@
+{
+  "opencode": {
+    "version": "2.2.7",
+    "release": "1",
+    "url": "https://opencode.ai/files/bin/2.2.7/opencode-desktop-linux-x86_64.rpm",
+    "sha256": "890a9b0ad91775234e7d43950b574dd2d898e4faf1572f1b0368b2b9db856a2b"
+  },
+  "hex": {
+    "version": "3.4.0",
+    "release": "1",
+    "url": "https://anoma.ly/release/hex/files/04c490d153908f3aa8b12399552e48ede8fb5fa3e9019ae2543b1f3811ebf26f/hex.rpm",
+    "sha256": "04c490d153908f3aa8b12399552e48ede8fb5fa3e9019ae2543b1f3811ebf26f"
+  }
+}

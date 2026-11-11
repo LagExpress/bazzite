@@ -3,6 +3,8 @@
 Eleven x86_64 bootc images: all ten upstream Bazzite variants plus KDE Bazzite DX
 with NVIDIA Open. Every image installs **Brave Origin** (`brave-origin`) from
 [Brave's official signed release RPM repository](https://brave.com/origin/linux/).
+Every variant also includes [OpenCode Desktop](https://opencode.ai/product) and
+[Hex](https://anoma.ly/hex/) from their official Fedora RPM downloads.
 Upstream drivers, desktop environments, gaming tools and DX tooling are inherited.
 
 ## Images
@@ -115,8 +117,34 @@ at boot. This keeps Brave available after bootc deployments, where `/var` conten
 from an image does not act as an immutable application payload. The RPM package
 remains registered; updates arrive in rebuilt OS images.
 
-The image verifier checks Fedora 45, the installed RPM, the executable payload,
-the restored launcher path and the signature policy. Hardware boot, graphical
+## OpenCode Desktop and Hex
+
+The shared `Containerfile` installs OpenCode Desktop **2.2.7** and Hex **3.4.0**
+through `build_files/install-desktop-apps.sh` in every variant. The reviewed
+versions, immutable vendor URLs and SHA-256 checksums are recorded in
+`build_files/desktop-apps.json`. Downloads must match both the pinned checksum
+and expected RPM name/version/architecture before installation. These vendor
+RPMs are unsigned; only their local RPM signature check is disabled, while DNF
+continues to verify dependencies from signed repositories.
+
+OpenCode's `/opt/OpenCode` payload is relocated to `/usr/lib/opt/OpenCode`, with
+a tmpfiles rule restoring the expected path at boot. Its desktop menu entry and
+bundled CLI remain available; `opencode-desktop` launches the desktop application.
+Hex installs directly to `/usr/bin/hex`, with its official desktop entry and
+user service. Launch it from the menu or with `hex`; the package does not enable
+its user service automatically. Hex downloads its speech model on first use.
+No per-user accounts, API credentials, microphone grants or speech models are
+baked into these images. Application updates arrive through rebuilt OS images.
+
+To update these two apps, obtain their current official Fedora RPMs from the
+product pages, inspect their package metadata and SHA-256 sums, then update the
+lock file's version, release, URL and checksum together. The image retains the
+lock file at `/usr/share/lagexpress/desktop-apps.json` for inspection. Brave Origin
+continues to follow its signed release repository independently.
+
+The image verifier checks Fedora 45, the three installed RPMs, pinned application
+versions, executable payloads, restored launcher paths, Hex's version command,
+desktop entries, user service and signature policy. Hardware boot, graphical
 browser operation and NVIDIA behavior still require checks on the target machine.
 
 ## Disk images

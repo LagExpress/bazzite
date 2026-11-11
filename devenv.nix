@@ -11,5 +11,8 @@
     shellcheck
     shfmt
     actionlint
+    curl
+    rpm
+    cpio
   ];
 }
