@@ -9,6 +9,11 @@ on:
   schedule:
     - cron: '05 10 * * *'
   workflow_dispatch:
+    inputs:
+      update_apps:
+        description: Resolve the latest official application releases
+        type: boolean
+        default: true
 
 permissions: {}
 
@@ -28,9 +33,26 @@ jobs:
       - name: Validate configuration
         run: |
           for script in build_files/*.sh scripts/*.sh; do bash -n "$script"; done
-          shellcheck build_files/build.sh scripts/*.sh
+          shellcheck build_files/*.sh scripts/*.sh
           jq -e '.fedora == 45 and (.images | length == 11) and ([.images[].name] | length == (unique | length)) and all(.images[]; (.name | test("^[a-z0-9-]+$")) and (.base | test("^ghcr.io/ublue-os/[a-z0-9-]+:stable-45$")))' images.json
-          jq -e 'keys == ["hex", "opencode"] and all(.[]; (.version | test("^[0-9]+[.][0-9]+[.][0-9]+$")) and (.release | test("^[0-9]+$")) and (.sha256 | test("^[0-9a-f]{64}$")) and (.url | startswith("https://")))' build_files/desktop-apps.json
+          python3 -c 'import ast, pathlib; ast.parse(pathlib.Path("scripts/update-desktop-apps.py").read_text())'
+          jq -e 'keys == ["chatgpt", "hex", "opencode", "orca-ide"] and all(.[]; (.version | test("^[0-9]+[.][0-9]+[.][0-9]+$")) and (.sha256 | test("^[0-9a-f]{64}$")) and (.url | startswith("https://")) and (.kind == "rpm") and (.release | test("^[0-9]+$")))' build_files/desktop-apps.json
+      - name: Resolve latest application releases once for all variants
+        if: github.event_name != 'workflow_dispatch' || inputs.update_apps
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/update-desktop-apps.py
+      - name: Save application release snapshot
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: desktop-app-releases
+          path: build_files/desktop-apps.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Summarize application versions
+        run: |
+          echo '### Application release snapshot' >> "$GITHUB_STEP_SUMMARY"
+          jq -r 'to_entries[] | "- \(.key): \(.value.version)"' build_files/desktop-apps.json >> "$GITHUB_STEP_SUMMARY"
       - name: Export image matrix
         id: matrix
         run: echo "images=$(jq -c '{include:.images}' images.json)" >> "$GITHUB_OUTPUT"
@@ -51,12 +73,17 @@ jobs:
       BASE_IMAGE: ${{ matrix.base }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Use the shared application release snapshot
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: desktop-app-releases
+          path: build_files
       - name: Prepare image names
         env:
           REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
           echo "IMAGE_REGISTRY=ghcr.io/${REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"
-          echo "VERSION_TAG=45-$(date -u +%Y%m%d)-${GITHUB_SHA:0:7}" >> "$GITHUB_ENV"
+          echo "VERSION_TAG=45-$(date -u +%Y%m%d)-${GITHUB_SHA:0:7}-run${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
       - name: Install Cosign
         if: github.event_name != 'pull_request'
         uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532 # v4.1.3

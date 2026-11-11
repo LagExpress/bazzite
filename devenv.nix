@@ -1,5 +1,6 @@
 { pkgs, ... }:
 {
+  languages.python.enable = true;
   packages = with pkgs; [
     git
     gh
@@ -14,5 +15,6 @@
     curl
     rpm
     cpio
+    gnupg
   ];
 }

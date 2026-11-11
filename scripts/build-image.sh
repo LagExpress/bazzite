@@ -9,9 +9,10 @@ revision="$(git rev-parse HEAD)"
 podman build --pull=always --platform linux/amd64 \
 	--build-arg "BASE_IMAGE=$base" --build-arg "IMAGE_REGISTRY=$registry" \
 	--label "org.opencontainers.image.title=$variant" \
-	--label "org.opencontainers.image.description=Bazzite 45 with Brave Origin, OpenCode Desktop and Hex" \
+	--label "org.opencontainers.image.description=Bazzite 45 with Brave Origin, OpenCode, Hex, Codex and Orca" \
 	--label "org.opencontainers.image.source=https://github.com/$source_repo" \
 	--label "org.opencontainers.image.revision=$revision" \
 	--label "org.opencontainers.image.base.name=$base" \
+	--label "io.lagexpress.desktop-apps.sha256=$(sha256sum build_files/desktop-apps.json | cut -d ' ' -f 1)" \
 	--label "org.opencontainers.image.version=45.$(date -u +%Y%m%d)-${revision:0:7}" \
 	--tag "localhost/$variant:45" --file Containerfile .

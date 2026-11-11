@@ -14,7 +14,7 @@ RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=tmpfs,dst=/tmp \
     /ctx/build.sh
 
-# Official OpenCode Desktop and Hex RPMs, pinned in desktop-apps.json.
+# Desktop apps use a shared latest-release snapshot resolved once by CI.
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/log \

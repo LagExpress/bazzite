@@ -1,14 +1,30 @@
 {
-  "opencode": {
-    "version": "2.2.7",
+  "chatgpt": {
+    "kind": "rpm",
     "release": "1",
-    "url": "https://opencode.ai/files/bin/2.2.7/opencode-desktop-linux-x86_64.rpm",
-    "sha256": "890a9b0ad91775234e7d43950b574dd2d898e4faf1572f1b0368b2b9db856a2b"
+    "sha256": "d1e6d629331990fc4dbb09bde920981566a3e12f2571d1171410e8981cbb7d67",
+    "url": "https://persistent.oaistatic.com/codex-app-prod/linux/rpm/x86_64/chatgpt-26.1106.51428-1.x86_64.rpm",
+    "version": "26.1106.51428"
   },
   "hex": {
-    "version": "3.4.0",
+    "kind": "rpm",
     "release": "1",
+    "sha256": "04c490d153908f3aa8b12399552e48ede8fb5fa3e9019ae2543b1f3811ebf26f",
     "url": "https://anoma.ly/release/hex/files/04c490d153908f3aa8b12399552e48ede8fb5fa3e9019ae2543b1f3811ebf26f/hex.rpm",
-    "sha256": "04c490d153908f3aa8b12399552e48ede8fb5fa3e9019ae2543b1f3811ebf26f"
+    "version": "3.4.0"
+  },
+  "opencode": {
+    "kind": "rpm",
+    "release": "1",
+    "sha256": "890a9b0ad91775234e7d43950b574dd2d898e4faf1572f1b0368b2b9db856a2b",
+    "url": "https://opencode.ai/files/bin/2.2.7/opencode-desktop-linux-x86_64.rpm",
+    "version": "2.2.7"
+  },
+  "orca-ide": {
+    "kind": "rpm",
+    "release": "1",
+    "sha256": "817b4019f492f48fabe3bb0f17f82495720280904f78d39f199c7cc275bde7a1",
+    "url": "https://github.com/stablyai/orca/releases/download/v1.4.256/orca-ide-1.4.256.x86_64.rpm",
+    "version": "1.4.256"
   }
 }
