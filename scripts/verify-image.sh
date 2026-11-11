@@ -8,5 +8,5 @@ podman run --rm --entrypoint /usr/bin/bash "localhost/$variant:45" -euc '
     systemd-tmpfiles --create /usr/lib/tmpfiles.d/brave-origin.conf
     test -x /usr/bin/brave-origin
     test -s /etc/pki/containers/lagexpress-bazzite.pub
-    jq -e '\''.transports.docker | to_entries | any(.value[]; .type == "sigstoreSigned" and .keyPath == "/etc/pki/containers/lagexpress-bazzite.pub")'\'' /etc/containers/policy.json
+    jq -e '\''[.transports.docker[][] | select(.type == "sigstoreSigned" and .keyPath == "/etc/pki/containers/lagexpress-bazzite.pub")] | length == 11'\'' /etc/containers/policy.json
 '
