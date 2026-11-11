@@ -43,7 +43,7 @@ jobs:
       packages: write
     strategy:
       fail-fast: false
-      max-parallel: 11
+      max-parallel: 3
       matrix: ${{ fromJson(needs.matrix.outputs.images) }}
     env:
       IMAGE_NAME: ${{ matrix.name }}
@@ -89,8 +89,14 @@ jobs:
         run: |
           set -euo pipefail
           for tag in 45 stable-45 latest "$VERSION_TAG"; do
-            podman push --digestfile "$RUNNER_TEMP/image-digest" \
-              "localhost/$IMAGE_NAME:45" "$IMAGE_REGISTRY/$IMAGE_NAME:$tag"
+            for attempt in 1 2 3 4; do
+              if podman push --digestfile "$RUNNER_TEMP/image-digest" \
+                "localhost/$IMAGE_NAME:45" "$IMAGE_REGISTRY/$IMAGE_NAME:$tag"; then
+                break
+              fi
+              test "$attempt" -lt 4 || exit 1
+              sleep "$((attempt * 15))"
+            done
           done
           echo "digest=$(cat "$RUNNER_TEMP/image-digest")" >> "$GITHUB_OUTPUT"
       - name: Sign and verify published image
@@ -100,6 +106,13 @@ jobs:
           COSIGN_PASSWORD: ''
           DIGEST: ${{ steps.publish.outputs.digest }}
         run: |
-          cosign sign -y --new-bundle-format=false --use-signing-config=false \
-            --key env://COSIGN_PRIVATE_KEY "$IMAGE_REGISTRY/$IMAGE_NAME@$DIGEST"
-          cosign verify --key cosign.pub "$IMAGE_REGISTRY/$IMAGE_NAME@$DIGEST"
+          set -euo pipefail
+          for attempt in 1 2 3 4; do
+            if cosign sign -y --new-bundle-format=false --use-signing-config=false \
+              --key env://COSIGN_PRIVATE_KEY "$IMAGE_REGISTRY/$IMAGE_NAME@$DIGEST" && \
+              cosign verify --key cosign.pub "$IMAGE_REGISTRY/$IMAGE_NAME@$DIGEST"; then
+              exit 0
+            fi
+            test "$attempt" -lt 4 || exit 1
+            sleep "$((attempt * 15))"
+          done
