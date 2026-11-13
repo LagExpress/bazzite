@@ -8,6 +8,8 @@ COPY images.json /images.json
 FROM ${BASE_IMAGE}
 ARG IMAGE_REGISTRY=ghcr.io/lagexpress
 
+RUN mkdir -p /nix
+
 RUN --mount=type=bind,from=ctx,source=/,target=/ctx \
     --mount=type=cache,dst=/var/cache \
     --mount=type=cache,dst=/var/log \
